@@ -36,7 +36,7 @@ public class ObjectsFriendMapProgram {
 
 	private static Map<String, Friend> friendData = new HashMap<String, Friend>();
 	private static Scanner input = new Scanner(System.in);
-	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d.M.yyyy");
 
 	// Get choice method
 	// Only allow the value which is integer from 0-4
@@ -92,8 +92,40 @@ public class ObjectsFriendMapProgram {
 				// Add data to Map
 				friendData.put(nickname, new Friend(nickname, name, birthdate));
 
-			} catch (DateTimeException e) {
+			} catch (DateTimeException e) { 
+				// if the birthdate is not valid
+				// Print out and ask user to input again until it is valid
 				System.out.println("Invalid date: " + birthdate);
+
+				// Ask user to give birthdate again
+				System.out.print("Enter birthdate (dd.mm.yyyy): ");
+				birthdate = input.nextLine();
+				
+				try {
+					// Validate given date
+					LocalDate localDate = LocalDate.parse(birthdate, formatter);
+
+					// Add data to Map
+					friendData.put(nickname, new Friend(nickname, name, birthdate));
+
+				} catch (DateTimeException e1) {
+					System.out.println("Invalid date: " + birthdate);
+					
+					// Ask user to give birthdate again
+					System.out.print("Enter birthdate (dd.mm.yyyy): ");
+					birthdate = input.nextLine();
+					
+					try {
+						// Validate given date
+						LocalDate localDate = LocalDate.parse(birthdate, formatter);
+
+						// Add data to Map
+						friendData.put(nickname, new Friend(nickname, name, birthdate));
+					} catch(DateTimeException e2) {
+						System.out.println("Invalid date: " + birthdate);
+					}
+				}
+
 
 			}
 
@@ -105,16 +137,16 @@ public class ObjectsFriendMapProgram {
 	// Find friend method
 	public static void findFriend() {
 
-		//Ask for input nickname
+		// Ask for input nickname
 		System.out.print("Enter nickname: ");
 		String foundNickName = input.nextLine();
 
 		boolean checkName = false;
-		
-		//Find nickname in the data
+
+		// Find nickname in the data
 		for (Friend friendArray : friendData.values()) {
-			checkName = true; // if nickname exist then checkName will be assign to true value
 			if (friendArray.getNickName().equals(foundNickName)) {
+				checkName = true; // if nickname exist then checkName will be assign to true value
 				System.out.println(friendArray.toString());
 				System.out.println();
 			}
@@ -128,19 +160,22 @@ public class ObjectsFriendMapProgram {
 	// Delete friend method
 	public static void deleteFriend() {
 
-		//Ask for input nickname
-		System.out.println("Enter nickname: ");
+		// Ask for input nickname
+		System.out.print("Enter nickname: ");
 		String deleteNickName = input.nextLine();
 
 		String removeSuccess = deleteNickName + " deleted!";
 		boolean checkName = false;
 
 		for (Friend friendArray : friendData.values()) {
-			checkName = true; // if nickname exist then checkName will assign to true value and then reomove it from the data
 			if (friendArray.getNickName().equals(deleteNickName)) {
+				checkName = true; 
+				// if nickname exist then checkName will assign to true value and then reomove
+				// it from the data
 				String removeKey = friendArray.getNickName();
 				friendData.remove(removeKey);
 				System.out.println(removeSuccess);
+				System.out.println();
 			}
 
 		}
